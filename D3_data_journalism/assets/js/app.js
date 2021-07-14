@@ -19,16 +19,20 @@ var chartHeight = svgHeight - margin.top - margin.bottom;
 // Load data from csv file
 d3.csv("assets/data/data.csv").then(function(censusData){
 
-  console.log(typeof censusData.healthcare);
-  console.log(typeof censusData.poverty);
+  // console.log(typeof censusData.healthcare);
+  // console.log(typeof censusData.poverty);
 
+  // Format data to numbers for appropriate scaling
+  // https://www.w3schools.com/js/js_number_methods.asp
   censusData.forEach(function(d) {
     d.healthcare = +d.healthcare;
     d.poverty = +d.poverty;
+    d.age = +d.age;
+    d.income = +d.income;
   });
 
-  console.log(typeof(censusData.healthcare));
-  console.log(typeof(censusData.healthcare));
+  // console.log(typeof(censusData.healthcare));
+  // console.log(typeof(censusData.healthcare));
 
   console.log(censusData);
   // Independent x-coordinates
@@ -41,7 +45,6 @@ d3.csv("assets/data/data.csv").then(function(censusData){
                   .domain([0, d3.max(censusData, d => d.poverty)])
                   .range([svgHeight, 0]);
 
-  console.log(`${xScale(13.9)}`)
   // Create axis
   var xAxis = d3.axisBottom(xScale);
   var yAxis = d3.axisLeft(yScale);
@@ -71,7 +74,7 @@ d3.csv("assets/data/data.csv").then(function(censusData){
             .append("circle")
             .attr("cx", function(d) {return xScale(d.healthcare);})
             .attr("cy", function(d) {return yScale(d.poverty);})
-            .attr("r", "1.5");
+            .attr("r", "6");
 
 });
 
