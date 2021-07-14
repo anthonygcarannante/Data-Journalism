@@ -19,6 +19,17 @@ var chartHeight = svgHeight - margin.top - margin.bottom;
 // Load data from csv file
 d3.csv("assets/data/data.csv").then(function(censusData){
 
+  console.log(typeof censusData.healthcare);
+  console.log(typeof censusData.poverty);
+
+  censusData.forEach(function(d) {
+    d.healthcare = +d.healthcare;
+    d.poverty = +d.poverty;
+  });
+
+  console.log(typeof(censusData.healthcare));
+  console.log(typeof(censusData.healthcare));
+
   console.log(censusData);
   // Independent x-coordinates
   var xScale = d3.scaleLinear()
@@ -30,12 +41,13 @@ d3.csv("assets/data/data.csv").then(function(censusData){
                   .domain([0, d3.max(censusData, d => d.poverty)])
                   .range([svgHeight, 0]);
 
+  console.log(`${xScale(13.9)}`)
   // Create axis
   var xAxis = d3.axisBottom(xScale);
   var yAxis = d3.axisLeft(yScale);
 
   // Select body, append SVG area to it, and set its dimensions
-  var svg = d3.select("body")
+  var svg = d3.select("#scatter")
               .append("svg")
               .attr("width", svgWidth)
               .attr("height", svgHeight);
@@ -53,7 +65,7 @@ d3.csv("assets/data/data.csv").then(function(censusData){
             .classed("axis", true)
             .call(yAxis);
 
-  chartGroup.append('g').selectAll("circle")
+  chartGroup.append("g").selectAll("circle")
             .data(censusData)
             .enter()
             .append("circle")
