@@ -19,9 +19,6 @@ var chartHeight = svgHeight - margin.top - margin.bottom;
 // Load data from csv file
 d3.csv("assets/data/data.csv").then(function(censusData){
 
-  // console.log(typeof censusData.healthcare);
-  // console.log(typeof censusData.poverty);
-
   // Format data to numbers for appropriate scaling
   // https://www.w3schools.com/js/js_number_methods.asp
   censusData.forEach(function(d) {
@@ -31,19 +28,16 @@ d3.csv("assets/data/data.csv").then(function(censusData){
     d.income = +d.income;
   });
 
-  // console.log(typeof(censusData.healthcare));
-  // console.log(typeof(censusData.healthcare));
-
   console.log(censusData);
   // Independent x-coordinates
   var xScale = d3.scaleLinear()
-                  .domain([0, d3.max(censusData, d => d.healthcare)])
-                  .range([0, svgWidth]);
+    .domain([0, d3.max(censusData, d => d.healthcare)])
+    .range([0, svgWidth]);
 
   // Dependent y-coordinates
   var yScale = d3.scaleLinear()
-                  .domain([0, d3.max(censusData, d => d.poverty)])
-                  .range([svgHeight, 0]);
+    .domain([0, d3.max(censusData, d => d.poverty)])
+    .range([svgHeight, 0]);
 
   // Create axis
   var xAxis = d3.axisBottom(xScale);
@@ -51,30 +45,43 @@ d3.csv("assets/data/data.csv").then(function(censusData){
 
   // Select body, append SVG area to it, and set its dimensions
   var svg = d3.select("#scatter")
-              .append("svg")
-              .attr("width", svgWidth)
-              .attr("height", svgHeight);
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight);
 
   // Append a group area, then set its margins
   var chartGroup = svg.append("g")
-                      .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   chartGroup.append("g")
-            .attr("transform", `translate(0, ${chartHeight})`)
-            .classed("axis", true)
-            .call(xAxis);
+    .attr("transform", `translate(0, ${chartHeight})`)
+    .classed("axis", true)
+    .call(xAxis);
 
   chartGroup.append("g")
-            .classed("axis", true)
-            .call(yAxis);
+    .classed("axis", true)
+    .call(yAxis);
 
   chartGroup.append("g").selectAll("circle")
-            .data(censusData)
-            .enter()
-            .append("circle")
-            .attr("cx", function(d) {return xScale(d.healthcare);})
-            .attr("cy", function(d) {return yScale(d.poverty);})
-            .attr("r", "6");
+    .data(censusData)
+    .enter()
+    .append("circle")
+    .attr("cx", function(d) {return xScale(d.healthcare);})
+    .attr("cy", function(d) {return yScale(d.poverty);})
+    .attr("r", "6");
+
+  chartGroup.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", chartWidth)
+    .attr("y", chartHeight + margin.top)
+    .text("Healthcare");
+
+  chartGroup.append("text")
+    .attr("text-anchor", "end")
+    .attr("transform", "rotate(-90)")
+    .attr("x", - margin.top)
+    .attr("y", - margin.left + 20)
+    .text("Poverty");
 
 });
 
