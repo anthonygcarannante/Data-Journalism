@@ -1,18 +1,28 @@
 // Define the SVG area margins
 var svgWidth = 960;
-var svgHeight = 500;
+var svgHeight = 600;
 
 // Define the chart's margins as an object
 var margin = {
-    top: 60,
-    right: 60,
-    bottom: 60,
-    left: 60
+    top: 50,
+    right: 50,
+    bottom: 50,
+    left: 50
 };
 
 // Define dimensions of the chart area
 var chartWidth = svgWidth - margin.left - margin.right;
 var chartHeight = svgHeight - margin.top - margin.bottom;
+
+  // Select body, append SVG area to it, and set its dimensions
+  var svg = d3.select("#scatter")
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight);
+
+  // Append a group area, then set its margins
+  var chartGroup = svg.append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Healthcare vs. Poverty Scatter Plot
 
@@ -29,9 +39,10 @@ d3.csv("assets/data/data.csv").then(function(censusData){
   });
 
   console.log(censusData);
+
   // Independent x-coordinates
   var xScale = d3.scaleLinear()
-    .domain([0, d3.max(censusData, d => d.healthcare)])
+    .domain([d3.min(censusData, d => d.income) - 2, d3.max(censusData, d => d.income)])
     .range([0, svgWidth]);
 
   // Dependent y-coordinates
@@ -43,37 +54,41 @@ d3.csv("assets/data/data.csv").then(function(censusData){
   var xAxis = d3.axisBottom(xScale);
   var yAxis = d3.axisLeft(yScale);
 
-  // Select body, append SVG area to it, and set its dimensions
-  var svg = d3.select("#scatter")
-    .append("svg")
-    .attr("width", svgWidth)
-    .attr("height", svgHeight);
-
-  // Append a group area, then set its margins
-  var chartGroup = svg.append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
   chartGroup.append("g")
     .attr("transform", `translate(0, ${chartHeight})`)
-    .classed("axis", true)
     .call(xAxis);
 
   chartGroup.append("g")
-    .classed("axis", true)
     .call(yAxis);
 
-  chartGroup.append("g").selectAll("circle")
+  // Format scatter plot points
+  var circleGroup = chartGroup.selectAll("circle")
     .data(censusData)
-    .enter()
-    .append("circle")
-    .attr("cx", function(d) {return xScale(d.healthcare);})
-    .attr("cy", function(d) {return yScale(d.poverty);})
-    .attr("r", "6");
+  
+  var elemEnter = circleGroup.enter();
 
-  chartGroup.append("text")
+  // Create circles for data points
+  var circle = elemEnter.append("circle")
+    .attr("cx", d => xScale(d.income))
+    .attr("cy", d => yScale(d.poverty))
+    .attr("r", "15")
+    .attr("fill", "orange")
+    .attr("stroke-width", "1")
+    .attr("stroke", "black")
+    .classed("state-circle");
+
+  // Create text for state abbreviations inside circles
+  var circleText = elemEnter.append("text")
+    .attr("x", d => xScale(d.income)-10)
+    .attr("y", d => yScale(d.poverty)+5)
+    .text(d => d.abbr)
+    .classed("state-text");
+
+  // Format Axis Labels
+    chartGroup.append("text")
     .attr("text-anchor", "end")
     .attr("x", chartWidth)
-    .attr("y", chartHeight + margin.top)
+    .attr("y", chartHeight + 40)
     .text("Healthcare");
 
   chartGroup.append("text")
@@ -82,6 +97,6 @@ d3.csv("assets/data/data.csv").then(function(censusData){
     .attr("x", - margin.top)
     .attr("y", - margin.left + 20)
     .text("Poverty");
-
 });
+
 
