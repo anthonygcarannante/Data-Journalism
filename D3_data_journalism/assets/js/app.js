@@ -13,8 +13,8 @@ function makeResponsive() {
 
   // SVG wrapper dimensions are determined by the current width and
   // height of the browser window.
-  svgWidth = window.innerWidth;
-  svgHeight = window.innerHeight; 
+  svgWidth = window.innerWidth * 0.75;
+  svgHeight = window.innerHeight * 0.75; 
 
   // Define the chart's margins as an object
   var margin = {
