@@ -108,6 +108,22 @@ function makeResponsive() {
       .attr("y", d => yScale(d.poverty)+5)
       .text(d => d.abbr)
       .classed("stateText", true);
+
+    // Create Tooltip: Apppend tooltip div
+    var toolTip = d3.select("body")
+      .append("div")
+      .classed("d3-tip", true);
+    
+    circle.on("mouseover", function(d) {
+      toolTip.style("display", "block")
+        .html(`<strong>Healthcare: ${d.healthcare}%</strong><hr>Poverty: ${d.poverty}%`)
+        .style("left", d3.event.pageX + "px")
+        .style("top", d3.event.pageY + "px");
+    })
+      .on("mouseout", function() {
+        toolTip.style("display", "none");
+      })
+      
   });
 };
 
