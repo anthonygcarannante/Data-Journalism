@@ -2,14 +2,14 @@
 // automatically resizes the chart
 function makeResponsive() {
 
- // if the SVG area isn't empty when the browser loads,
+  // if the SVG area isn't empty when the browser loads,
   // remove it and replace it with a resized version of the chart
   var svgArea = d3.select("body").select("svg");
-
+  
   // clear svg is not empty
   if (!svgArea.empty()) {
     svgArea.remove();
-  }
+  };
 
   // SVG wrapper dimensions are determined by the current width and
   // height of the browser window.
@@ -28,15 +28,15 @@ function makeResponsive() {
   var chartWidth = svgWidth - margin.left - margin.right;
   var chartHeight = svgHeight - margin.top - margin.bottom;
 
-    // Select body, append SVG area to it, and set its dimensions
-    var svg = d3.select("#scatter")
-      .append("svg")
-      .attr("width", svgWidth)
-      .attr("height", svgHeight);
+  // Select body, append SVG area to it, and set its dimensions
+  var svg = d3.select("#scatter")
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight);
 
-    // Append a group area, then set its margins
-    var chartGroup = svg.append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
+  // Append a group area, then set its margins
+  var chartGroup = svg.append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   // Healthcare vs. Poverty Scatter Plot
 
@@ -56,13 +56,13 @@ function makeResponsive() {
 
     // Independent x-coordinates
     var xScale = d3.scaleLinear()
-      .domain([d3.min(censusData, d => d.healthcare) - 2, d3.max(censusData, d => d.healthcare)])
-      .range([0, svgWidth]);
+      .domain([d3.min(censusData, d => d.healthcare) * 0.8, d3.max(censusData, d => d.healthcare) * 1.1])
+      .range([0, chartWidth]);
 
     // Dependent y-coordinates
     var yScale = d3.scaleLinear()
-      .domain([0, d3.max(censusData, d => d.poverty)])
-      .range([svgHeight, 0]);
+      .domain([d3.min(censusData, d => d.poverty) * 0.8, d3.max(censusData, d => d.poverty) * 1.1])
+      .range([chartHeight, 0]);
 
     // Create axis
     var xAxis = d3.axisBottom(xScale);
@@ -91,7 +91,7 @@ function makeResponsive() {
 
     // Format scatter plot points
     var circleGroup = chartGroup.selectAll("circle")
-      .data(censusData)
+      .data(censusData);
 
     var elemEnter = circleGroup.enter();
 
