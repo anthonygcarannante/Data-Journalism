@@ -112,14 +112,17 @@ function makeResponsive() {
     // Create Tooltip: Apppend tooltip div
     var toolTip = d3.tip()
       .attr("class", "d3-tip")
+      .offset([40, -60])
       .html(function(d) {
-        return `<strong>Healthcare: ${d.healthcare}%</strong><hr>Poverty: ${d.poverty}%`
+        return `<strong>${d.abbr}</strong></hr><div>Healthcare: ${d.healthcare}%</div>Poverty: ${d.poverty}%`
       })
     
     circle.call(toolTip);
 
     circle.on("mouseover", function(d) {
-      toolTip.show(d);
+      toolTip.show(d)
+      .attr("x", d => xScale(d.healthcare))
+      .attr("y", d => yScale(d.poverty))
     })
     .on("mouseout", function(d) {
       toolTip.hide(d);
